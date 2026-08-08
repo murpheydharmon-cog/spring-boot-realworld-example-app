@@ -1,6 +1,6 @@
 package io.spring.api.exception;
 
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -44,13 +44,13 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    return handleExceptionInternal(e, error, headers, UNPROCESSABLE_ENTITY, request);
+    return handleExceptionInternal(e, error, headers, UNPROCESSABLE_CONTENT, request);
   }
 
   @ExceptionHandler(InvalidAuthenticationException.class)
   public ResponseEntity<Object> handleInvalidAuthentication(
       InvalidAuthenticationException e, WebRequest request) {
-    return ResponseEntity.status(UNPROCESSABLE_ENTITY)
+    return ResponseEntity.status(UNPROCESSABLE_CONTENT)
         .body(
             new HashMap<String, Object>() {
               {
@@ -76,11 +76,11 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError.getDefaultMessage()))
             .collect(Collectors.toList());
 
-    return ResponseEntity.status(UNPROCESSABLE_ENTITY).body(new ErrorResource(errorResources));
+    return ResponseEntity.status(UNPROCESSABLE_CONTENT).body(new ErrorResource(errorResources));
   }
 
   @ExceptionHandler({ConstraintViolationException.class})
-  @ResponseStatus(UNPROCESSABLE_ENTITY)
+  @ResponseStatus(UNPROCESSABLE_CONTENT)
   @ResponseBody
   public ErrorResource handleConstraintViolation(
       ConstraintViolationException ex, WebRequest request) {

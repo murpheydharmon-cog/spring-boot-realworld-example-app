@@ -10,16 +10,17 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The REST API unwraps root values (for example {@code {"user": {...}}}), a setting that must not
- * be applied to GraphQL requests. The GraphQL endpoint therefore reads requests with its own
- * mapper.
+ * be applied to GraphQL requests. The GraphQL endpoint therefore reads requests with a mapper that
+ * keeps the application configuration but leaves root values wrapped.
  */
 @Configuration
 public class GraphQLHttpConfiguration {
 
   @Bean
-  public GraphQlHttpHandler graphQlHttpHandler(WebGraphQlHandler webGraphQlHandler) {
+  public GraphQlHttpHandler graphQlHttpHandler(
+      WebGraphQlHandler webGraphQlHandler, JsonMapper jsonMapper) {
     JsonMapper mapper =
-        JsonMapper.builder().disable(DeserializationFeature.UNWRAP_ROOT_VALUE).build();
+        jsonMapper.rebuild().disable(DeserializationFeature.UNWRAP_ROOT_VALUE).build();
     return new GraphQlHttpHandler(webGraphQlHandler, new JacksonJsonHttpMessageConverter(mapper));
   }
 }

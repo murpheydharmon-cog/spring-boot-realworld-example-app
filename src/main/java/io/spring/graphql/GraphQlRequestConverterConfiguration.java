@@ -31,7 +31,10 @@ public class GraphQlRequestConverterConfiguration implements WebMvcConfigurer {
     GraphQlRequestConverter() {
       super(JsonMapper.builder().build());
       setSupportedMediaTypes(
-          List.of(MediaType.APPLICATION_JSON, new MediaType("application", "*+json")));
+          List.of(
+              MediaType.APPLICATION_JSON,
+              new MediaType("application", "*+json"),
+              MediaType.parseMediaType("application/graphql")));
     }
 
     @Override

@@ -32,13 +32,16 @@ public class GraphQlRequestConverterTest {
 
   @Test
   public void should_keep_unwrapping_root_value_for_rest_requests() throws Exception {
+    String username = "converter" + System.nanoTime();
     mockMvc
         .perform(
             post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"user\":{\"email\":\"converter@test.com\",\"username\":\"converter\",\"password\":\"pass1234\"}}"))
+                    String.format(
+                        "{\"user\":{\"email\":\"%s@test.com\",\"username\":\"%s\",\"password\":\"pass1234\"}}",
+                        username, username)))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.user.username").value("converter"));
+        .andExpect(jsonPath("$.user.username").value(username));
   }
 }

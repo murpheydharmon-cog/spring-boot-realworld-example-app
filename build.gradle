@@ -25,6 +25,9 @@ repositories {
     mavenCentral()
 }
 
+// Spring Boot 4.1.0 manages json-path 2.10.0, but DGS 12 requires the Jackson 3
+// provider (com.jayway.jsonpath.spi.json.Jackson3JsonProvider), added in 3.0.0.
+// Drop this once Boot manages json-path 3.x.
 ext['json-path.version'] = '3.0.0'
 
 configurations {

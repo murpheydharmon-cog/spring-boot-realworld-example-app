@@ -2,6 +2,8 @@ package io.spring.api.security;
 
 import static java.util.Arrays.asList;
 
+import io.spring.core.service.JwtService;
+import io.spring.core.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,17 +25,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
   @Bean
-  public JwtTokenFilter jwtTokenFilter() {
-    return new JwtTokenFilter();
-  }
-
-  @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(
+      HttpSecurity http, UserRepository userRepository, JwtService jwtService) throws Exception {
     http.csrf(csrf -> csrf.disable())
         .cors(cors -> {})
         .exceptionHandling(
@@ -60,7 +58,9 @@ public class WebSecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(
+            new JwtTokenFilter(userRepository, jwtService),
+            UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
